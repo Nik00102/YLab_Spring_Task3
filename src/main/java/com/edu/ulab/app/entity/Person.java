@@ -14,9 +14,9 @@ import java.util.Set;
 @Table(name = "person", schema = "ulab_edu")
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence")
-    @SequenceGenerator(name = "sequence", sequenceName = "sequence", allocationSize = 100)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_sequence")
+    @SequenceGenerator(name = "person_sequence", sequenceName = "person_sequence", allocationSize = 0)
+    private Long id;
 
     @Column(nullable = false)
     private String fullName;
@@ -27,13 +27,11 @@ public class Person {
     @Column(nullable = false)
     private int age;
 
-//    @Column(nullable = false)
-//    private int count;
-
     @OneToMany(mappedBy = "person", cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.DETACH,
             CascadeType.REFRESH})
     private Set<Book> bookSet;
+
 }

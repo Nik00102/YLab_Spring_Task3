@@ -8,6 +8,10 @@ import com.edu.ulab.app.service.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Slf4j
 @Service
 public class BookServiceImpl implements BookService {
@@ -32,19 +36,33 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto updateBook(BookDto bookDto) {
+    public BookDto updateBook(BookDto bookDto, Long userId) {
         // реализовать недстающие методы
-        return null;
+        BookDto updatedBook = createBook(bookDto);
+        getBooksByUserId(userId).add(updatedBook);
+        log.info("Updated book: {}", updatedBook);
+        return updatedBook;
     }
 
     @Override
-    public BookDto getBookById(Long id) {
+    public List<BookDto> getBooksByUserId(Long userId) {
         // реализовать недстающие методы
-        return null;
+        List<BookDto> bookDtos = StreamSupport.stream(bookRepository.findAll().spliterator(), false)
+                .filter(book -> book.getPerson().getId().equals(userId))
+                .map(book -> bookMapper.bookToBookDto(book))
+                .collect(Collectors.toList());
+        return bookDtos;
     }
 
     @Override
-    public void deleteBookById(Long id) {
+    public boolean deleteBooksByUserId(Long userId) {
         // реализовать недстающие методы
+        List<Long> booksIdForDeleting = StreamSupport.stream(bookRepository.findAll().spliterator(), false)
+                .filter(book -> book.getPerson().getId().equals(userId))
+                .map(Book::getId)
+                .collect(Collectors.toList());
+        bookRepository.deleteAllById(booksIdForDeleting);
+        log.info("BooksID which will be deleted: {}", booksIdForDeleting);
+        return getBooksByUserId(userId)!=null;
     }
 }

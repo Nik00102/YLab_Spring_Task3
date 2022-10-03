@@ -1,7 +1,5 @@
 package com.edu.ulab.app.entity;
 
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,9 +13,9 @@ import javax.persistence.*;
 @Table(name = "book", schema = "ulab_edu")
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence")
-    @SequenceGenerator(name = "sequence", sequenceName = "sequence", allocationSize = 100)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_sequence")
+    @SequenceGenerator(name = "book_sequence", sequenceName = "book_sequence", allocationSize = 0)
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -28,7 +26,16 @@ public class Book {
     @Column(nullable = false)
     private long pageCount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", nullable = false)
-    private Person person;
+   @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Person person=new Person();
+
+    public void setUserId(Long userId) {
+        this.person.setId(userId);
+    }
+
+    public Long getUserId() {
+        return this.person.getId();
+    }
+
 }

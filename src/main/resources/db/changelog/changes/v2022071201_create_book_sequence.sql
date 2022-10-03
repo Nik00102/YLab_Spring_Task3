@@ -1,0 +1,1 @@
+create sequence book_sequence;
