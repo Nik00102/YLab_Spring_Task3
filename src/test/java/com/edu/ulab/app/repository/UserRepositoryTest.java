@@ -52,9 +52,75 @@ public class UserRepositoryTest {
     }
 
     // update
+    @DisplayName("Обновить юзера. Число select должно равняться 1")
+    @Test
+    @Rollback
+    @Sql({"classpath:sql/1_clear_schema.sql",
+            "classpath:sql/2_insert_person_data.sql",
+            "classpath:sql/3_insert_book_data.sql"
+    })
+    void updatePerson_thenAssertDmlCount() {
+        //Given
+        Long userId = 1001L;
+
+        //When
+        Person person = userRepository.findById(userId).get();
+        person.setAge(111);
+        person.setTitle("reader");
+        person.setFullName("Test Test");
+        Person result = userRepository.save(person);
+
+        //Then
+        assertThat(result.getTitle()).isEqualTo("reader");
+        assertSelectCount(1);
+    }
+
     // get
-    // get all
+    @DisplayName("Найти юзера. Число select должно равняться 1")
+    @Test
+    @Rollback
+    @Sql({"classpath:sql/1_clear_schema.sql",
+            "classpath:sql/2_insert_person_data.sql",
+            "classpath:sql/3_insert_book_data.sql"
+    })
+    void getPerson_thenAssertDmlCount() {
+        //Given
+        Long userId = 1001L;
+
+        //When
+        Person result = userRepository.findById(userId).get();
+
+        //Then
+        assertThat(result.getAge()).isEqualTo(55);
+        assertSelectCount(1);
+        assertInsertCount(0);
+        assertUpdateCount(0);
+        assertDeleteCount(0);
+    }
+
     // delete
+    @DisplayName("Удалить юзера. Число select должно равняться 1")
+    @Test
+    @Rollback
+    @Sql({"classpath:sql/1_clear_schema.sql",
+            "classpath:sql/2_insert_person_data.sql",
+            "classpath:sql/3_insert_book_data.sql"
+    })
+    void deletePerson_thenAssertDmlCount() {
+        //Given
+        Long userId = 1001L;
+
+        //When
+        Person person = userRepository.findById(userId).get();
+        userRepository.delete(person);
+
+        //Then
+        assertThat(person.getAge()).isEqualTo(55);
+        assertSelectCount(1);
+        assertInsertCount(0);
+        assertUpdateCount(0);
+        assertDeleteCount(0);
+    }
 
     // * failed
 }

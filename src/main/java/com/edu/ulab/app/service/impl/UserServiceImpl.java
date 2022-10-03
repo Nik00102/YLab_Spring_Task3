@@ -3,6 +3,7 @@ package com.edu.ulab.app.service.impl;
 import com.edu.ulab.app.dto.UserDto;
 import com.edu.ulab.app.entity.Person;
 import com.edu.ulab.app.mapper.UserMapper;
+import com.edu.ulab.app.mapper.UserMapperImpl;
 import com.edu.ulab.app.repository.UserRepository;
 import com.edu.ulab.app.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,19 +32,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto) {
+    public UserDto updateUser(UserDto userDto, Long userId) {
         // реализовать недстающие методы
-        return null;
+        UserDto userForUpdate = getUserById(userId);
+        userForUpdate.setFullName(userDto.getFullName());
+        userForUpdate.setTitle(userDto.getTitle());
+        userForUpdate.setAge(userDto.getAge());
+        return createUser(userForUpdate);
     }
 
     @Override
     public UserDto getUserById(Long id) {
         // реализовать недстающие методы
-        return null;
+        return new UserMapperImpl().personToUserDto(userRepository.findById(id).get());
     }
 
     @Override
-    public void deleteUserById(Long id) {
+    public boolean deleteUserById(Long id) {
         // реализовать недстающие методы
+        Person person = userMapper.userDtoToPerson(getUserById(id));
+        userRepository.delete(person);
+        log.info("Deleted person: {}", person);
+        return getUserById(id)!=null;
     }
 }

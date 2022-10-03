@@ -8,4 +8,7 @@ public class Storage {
     // учесть, что при сохранеии юзера или книги, должен генерироваться идентификатор
     // продумать что у узера может быть много книг и нужно создать эту связь
     // так же учесть, что методы хранилища принимают друго тип данных - учесть это в абстракции
+    public static UserEntityDAO userEntityDAO = new UserEntityDAO();
+    public static BookEntityDAO bookEntityDAO = new BookEntityDAO(userEntityDAO);
+
 }
